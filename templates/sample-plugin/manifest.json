@@ -1,0 +1,31 @@
+{
+  "$schema": "https://kudobydeck.com/schemas/plugin-manifest.v1.json",
+  "id": "com.kudoby.sample-plugin",
+  "name": "Quick Action Controller",
+  "version": "1.0.0",
+  "author": "Kudoby Technologies Pvt. Ltd.",
+  "website": "https://kudobydeck.com",
+  "description": "Demonstrates Kudoby Deck plugin architecture with action buttons and rotary dial controls.",
+  "minKudobyVersion": "2.4.0",
+  "category": "Broadcast Automation",
+  "entryPoint": "dist/index.js",
+  "actions": [
+    {
+      "uuid": "toggle-mic",
+      "name": "Mute / Unmute Mic",
+      "tooltip": "Toggles microphone audio input with real-time tally state",
+      "defaultIcon": "assets/mic.svg",
+      "supportedStates": ["live", "off"],
+      "hasSettings": true
+    },
+    {
+      "uuid": "master-volume-dial",
+      "name": "Master Volume Knob",
+      "tooltip": "Virtual rotary dial for volume level adjustments",
+      "type": "rotary-dial",
+      "step": 2,
+      "min": 0,
+      "max": 100
+    }
+  ]
+}
