@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kudoby Deck Developer Simulator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: #080b12;
+      color: #f8fafc;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 20px;
+    }
+    .header {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+    .badge {
+      display: inline-block;
+      padding: 4px 14px;
+      border-radius: 9999px;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      background: rgba(137, 48, 253, 0.15);
+      color: #a855f7;
+      border: 1px solid rgba(137, 48, 253, 0.3);
+      margin-bottom: 10px;
+    }
+    h1 { font-size: 26px; font-weight: 800; margin-bottom: 6px; }
+    .status-bar {
+      font-size: 13px;
+      color: #94a3b8;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .status-dot {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #ef4444;
+      margin-right: 6px;
+    }
+    .status-dot.connected { background: #10b981; }
+
+    /* Deck Hardware Mockup */
+    .deck-frame {
+      background: #0f1422;
+      border: 2px solid rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      padding: 24px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
+      max-width: 680px;
+      width: 100%;
+    }
+    .grid-15 {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .deck-key {
+      aspect-ratio: 1;
+      background: #171f33;
+      border: 2px solid rgba(255, 255, 255, 0.08);
+      border-radius: 14px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      cursor: pointer;
+      user-select: none;
+      transition: all 0.1s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    .deck-key:hover { border-color: rgba(255, 255, 255, 0.25); transform: translateY(-2px); }
+    .deck-key:active { transform: scale(0.94); }
+    .deck-key i { font-size: 20px; color: #a855f7; }
+    .deck-key span { font-size: 10.5px; font-weight: 700; text-align: center; color: #cbd5e1; }
+    .deck-key.tally-live { border-color: #ef4444 !important; box-shadow: 0 0 14px rgba(239, 68, 68, 0.4); }
+    .deck-key.tally-preview { border-color: #10b981 !important; box-shadow: 0 0 14px rgba(16, 185, 129, 0.4); }
+
+    /* Rotary Dials */
+    .dials-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      padding-top: 18px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .dial-unit {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+    .knob {
+      width: 58px;
+      height: 58px;
+      border-radius: 50%;
+      background: linear-gradient(145deg, #1e263d, #141a2b);
+      border: 2px solid rgba(255, 255, 255, 0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      cursor: grab;
+      box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.08), 0 4px 10px rgba(0, 0, 0, 0.5);
+    }
+    .knob-notch {
+      position: absolute;
+      top: 6px;
+      width: 3px;
+      height: 10px;
+      background: #a855f7;
+      border-radius: 2px;
+    }
+    .dial-label { font-size: 11px; font-weight: 700; color: #94a3b8; }
+    .dial-val { font-size: 12px; font-family: 'JetBrains Mono', monospace; color: #a855f7; }
+
+    /* Console logs */
+    .log-box {
+      margin-top: 24px;
+      max-width: 680px;
+      width: 100%;
+      background: #0a0d16;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      padding: 14px 18px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11.5px;
+      color: #94a3b8;
+      max-height: 180px;
+      overflow-y: auto;
+    }
+    .log-box div { margin-bottom: 4px; }
+    .log-event { color: #38bdf8; }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <div class="badge">SDK Simulator</div>
+    <h1>Virtual Kudoby Deck Emulator</h1>
+    <div class="status-bar">
+      <span class="status-dot" id="statusDot"></span>
+      <span id="statusText">Simulator Ready (Port 9173)</span>
+    </div>
+  </div>
+
+  <div class="deck-frame">
+    <!-- 15 Virtual LCD Keys -->
+    <div class="grid-15" id="gridContainer"></div>
+
+    <!-- 4 Rotary Dials -->
+    <div class="dials-row" id="dialsContainer"></div>
+  </div>
+
+  <div class="log-box" id="logBox">
+    <div>[Simulator] Initialized. Click keys or rotate knobs to test SDK dispatch.</div>
+  </div>
+
+  <script>
+    const logBox = document.getElementById('logBox');
+    function log(msg) {
+      const d = document.createElement('div');
+      d.innerHTML = `[${new Date().toLocaleTimeString()}] ${msg}`;
+      logBox.appendChild(d);
+      logBox.scrollTop = logBox.scrollHeight;
+    }
+
+    // Generate 15 keys
+    const grid = document.getElementById('gridContainer');
+    for (let i = 1; i <= 15; i++) {
+      const key = document.createElement('div');
+      key.className = 'deck-key';
+      key.id = `btn_${i}`;
+      key.innerHTML = `<i class="fa-solid fa-cube"></i><span>Key ${i}</span>`;
+
+      key.addEventListener('mousedown', () => {
+        log(`<span class="log-event">BUTTON DOWN</span>: btn_${i}`);
+      });
+      key.addEventListener('mouseup', () => {
+        log(`<span class="log-event">BUTTON UP</span>: btn_${i}`);
+      });
+      grid.appendChild(key);
+    }
+
+    // Generate 4 dials
+    const dials = document.getElementById('dialsContainer');
+    for (let i = 1; i <= 4; i++) {
+      const unit = document.createElement('div');
+      unit.className = 'dial-unit';
+      unit.innerHTML = `
+        <div class="knob" id="knob_${i}">
+          <div class="knob-notch" id="notch_${i}"></div>
+        </div>
+        <div class="dial-label">Dial ${i}</div>
+        <div class="dial-val" id="val_${i}">50%</div>
+      `;
+
+      let angle = 0;
+      let val = 50;
+      const knob = unit.querySelector('.knob');
+      const notch = unit.querySelector('.knob-notch');
+      const valText = unit.querySelector('.dial-val');
+
+      knob.addEventListener('wheel', (e) => {
+        e.preventDefault();
+        const delta = e.deltaY < 0 ? 1 : -1;
+        val = Math.max(0, Math.min(100, val + delta * 2));
+        angle += delta * 15;
+        notch.style.transform = `rotate(${angle}deg)`;
+        valText.textContent = `${val}%`;
+        log(`<span class="log-event">DIAL ROTATE</span>: dial_${i} delta=${delta} val=${val}`);
+      });
+
+      dials.appendChild(unit);
+    }
+  </script>
+</body>
+</html>
