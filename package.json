@@ -1,0 +1,28 @@
+{
+  "name": "@kudoby/deck-sdk",
+  "version": "2.4.0",
+  "description": "Official TypeScript SDK for Kudoby Deck broadcast control, custom dials, and OBS Studio automation.",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "kudoby",
+    "deck",
+    "stream-deck",
+    "obs-studio",
+    "webrtc",
+    "broadcast"
+  ],
+  "author": "Kudoby Technologies Pvt. Ltd. <support@kudobydeck.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kudoby/deck-sdk.git"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.3"
+  }
+}
