@@ -1,5 +1,6 @@
 # Kudoby Deck Developer SDK
 
+[![CI Build](https://github.com/kudoby/kudoby-deck-sdk/actions/workflows/ci.yml/badge.svg)](https://github.com/kudoby/kudoby-deck-sdk/actions)
 [![npm version](https://img.shields.io/badge/npm-v2.4.0-blue.svg)](https://www.npmjs.com/package/@kudoby/deck-sdk)
 [![License: MIT](https://img.shields.io/badge/License-MIT-purple.svg)](LICENSE)
 [![TypeScript](https://img.shields.io/badge/TypeScript-Ready-3178C6.svg)](https://www.typescriptlang.org/)
@@ -109,6 +110,29 @@ Explore the [`examples/`](./examples/) directory for complete, copy-pasteable im
 
 - [**`examples/obs-volume-dial.ts`**](./examples/obs-volume-dial.ts): Audio volume knob with tactile haptics and mute state toggle.
 - [**`examples/crypto-live-ticker.ts`**](./examples/crypto-live-ticker.ts): Real-time crypto price monitor with auto-refresh and dynamic green/red background switching.
+- [**`examples/discord-tally-controller.ts`**](./examples/discord-tally-controller.ts): Discord voice mute/deafen status with real-time tally states.
+- [**`examples/twitch-channel-points-alert.ts`**](./examples/twitch-channel-points-alert.ts): Live streamer alert trigger with LCD animations and haptic pulses.
+
+---
+
+## 🖥️ Local Browser Simulator
+
+Test plugins and hardware interactions directly in your browser without needing a physical phone or tablet:
+
+```bash
+# Start the local browser simulator on port 9173
+npm run simulate
+```
+Open **`http://localhost:9173`** to test 15 interactive LCD keys, rotate 4 rotary knobs with your scroll wheel, and inspect live WebSocket event dispatches.
+
+---
+
+## 🧩 Plugin Manifest Template
+
+Third-party plugins packaged for the **Kudoby Deck Marketplace** use a standardized manifest:
+
+- Explore the complete boilerplate in [**`templates/sample-plugin/`**](./templates/sample-plugin/)
+- View the [**`manifest.json`**](./templates/sample-plugin/manifest.json) specification for registering custom actions, icons, and rotary dials.
 
 ---
 

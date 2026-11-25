@@ -1,0 +1,3 @@
+# Mark simulator HTML/JS as documentation so repository language stats reflect TypeScript
+simulator/** linguist-documentation
+templates/** linguist-documentation
