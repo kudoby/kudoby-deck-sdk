@@ -36,6 +36,13 @@ jobs:
     - name: Publish to GitHub Packages
       run: |
         npm config set //npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}
+        # GitHub Packages requires the scope to match the owner repository (@kudoby)
+        node -e '
+          const pkg = require("./package.json");
+          pkg.name = "@kudoby/kudoby-deck-sdk";
+          pkg.publishConfig = { registry: "https://npm.pkg.github.com" };
+          require("fs").writeFileSync("./package.json", JSON.stringify(pkg, null, 2));
+        '
         npm publish || true
       env:
         NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
