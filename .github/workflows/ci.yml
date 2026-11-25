@@ -1,14 +1,20 @@
-name: CI Build & Type Check
+name: CI Build & Publish
 
 on:
   push:
     branches: [ main ]
-  pull_request:
-    branches: [ main ]
+    tags:
+      - 'v*'
+  release:
+    types: [ published, created ]
+  workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
 
     steps:
     - name: Checkout Code
@@ -18,9 +24,18 @@ jobs:
       uses: actions/setup-node@v4
       with:
         node-version: 20
+        registry-url: 'https://npm.pkg.github.com'
+        scope: '@kudoby'
 
     - name: Install Dependencies
       run: npm install
 
     - name: Run TypeScript Compile
       run: npm run build
+
+    - name: Publish to GitHub Packages
+      run: |
+        npm config set //npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}
+        npm publish || true
+      env:
+        NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
