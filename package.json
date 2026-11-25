@@ -1,5 +1,5 @@
 {
-  "name": "kudoby-deck-sdk",
+  "name": "@kudobydeck/deck-sdk",
   "version": "2.4.0",
   "description": "Official TypeScript & JavaScript SDK for Kudoby Deck. Build custom plugins, virtual rotary dials, and broadcast automation integrations.",
   "main": "dist/index.js",
@@ -15,7 +15,7 @@
   },
   "keywords": [
     "kudoby",
-    "kudoby-deck",
+    "kudobydeck",
     "stream-deck",
     "streamdeck",
     "obs-studio",

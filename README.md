@@ -1,7 +1,7 @@
 # Kudoby Deck Developer SDK
 
 [![CI Build](https://github.com/kudoby/kudoby-deck-sdk/actions/workflows/ci.yml/badge.svg)](https://github.com/kudoby/kudoby-deck-sdk/actions)
-[![npm version](https://img.shields.io/npm/v/kudoby-deck-sdk.svg?color=blue)](https://www.npmjs.com/package/kudoby-deck-sdk)
+[![npm version](https://img.shields.io/npm/v/@kudobydeck/deck-sdk.svg?color=blue)](https://www.npmjs.com/package/@kudobydeck/deck-sdk)
 [![License: MIT](https://img.shields.io/badge/License-MIT-purple.svg)](LICENSE)
 [![TypeScript](https://img.shields.io/badge/TypeScript-Ready-3178C6.svg)](https://www.typescriptlang.org/)
 [![Documentation](https://img.shields.io/badge/Docs-kudobydeck.com%2Fsdk-8930fd.svg)](https://kudobydeck.com/sdk/)
@@ -33,14 +33,14 @@ The Kudoby Deck SDK communicates directly with the Kudoby Desktop host engine ov
 ## 📦 Installation
 
 ```bash
-npm install kudoby-deck-sdk
+npm install @kudobydeck/deck-sdk
 ```
 
 Or using yarn / pnpm:
 
 ```bash
-yarn add kudoby-deck-sdk
-pnpm add kudoby-deck-sdk
+yarn add @kudobydeck/deck-sdk
+pnpm add @kudobydeck/deck-sdk
 ```
 
 ---
@@ -51,13 +51,13 @@ The SDK comes with built-in command-line tools to bootstrap and test plugins ins
 
 ```bash
 # 1. Scaffold a brand-new plugin with full TypeScript & manifest setup
-npx kudoby-deck-sdk create my-obs-plugin
+npx @kudobydeck/deck-sdk create my-obs-plugin
 
 # 2. Validate your manifest.json schema before publishing
-npx kudoby-deck-sdk validate
+npx @kudobydeck/deck-sdk validate
 
 # 3. Launch the in-browser 15-key & rotary dial hardware simulator
-npx kudoby-deck-sdk simulate
+npx @kudobydeck/deck-sdk simulate
 ```
 
 ---
@@ -65,7 +65,7 @@ npx kudoby-deck-sdk simulate
 ## 🚀 Quickstart
 
 ```typescript
-import { KudobyDeckClient } from 'kudoby-deck-sdk';
+import { KudobyDeckClient } from '@kudobydeck/deck-sdk';
 
 const client = new KudobyDeckClient({
   host: '127.0.0.1',
@@ -126,49 +126,6 @@ my-plugin/
 └── src/
     └── index.ts        # Plugin logic interacting with KudobyDeckClient
 ```
-
-### Sample `manifest.json`
-
-```json
-{
-  "$schema": "https://kudobydeck.com/schemas/plugin.v1.json",
-  "id": "com.example.obs-controller",
-  "name": "OBS Studio Smart Dial",
-  "version": "1.0.0",
-  "author": "Creator",
-  "description": "Control OBS scene volume, transition effects, and record tally lights.",
-  "category": "Broadcasting",
-  "entry": "dist/index.js",
-  "permissions": ["local-network", "storage"],
-  "actions": [
-    {
-      "uuid": "toggle-stream",
-      "name": "Stream Toggle",
-      "states": [
-        { "title": "LIVE", "backgroundColor": "#ef4444" },
-        { "title": "STANDBY", "backgroundColor": "#1e293b" }
-      ]
-    }
-  ],
-  "dials": [
-    {
-      "uuid": "master-volume",
-      "name": "Master Audio Dial",
-      "feedback": "haptic-continuous"
-    }
-  ]
-}
-```
-
----
-
-## 🌟 Real-World Examples
-
-Check out the [`examples/`](examples/) directory for production-ready implementations:
-- [**OBS Studio Volume Dial**](examples/obs-volume-dial.ts) - Fine-grained mixer audio with rotary dials and LCD volume meters.
-- [**Discord Tally Light & Mute Controller**](examples/discord-tally-controller.ts) - Dynamic microphone mute state and voice channel activity indicators.
-- [**Twitch Channel Points Alert**](examples/twitch-channel-points-alert.ts) - Real-time stream interaction flashes with animated deck backgrounds.
-- [**Crypto / Stock Live Ticker**](examples/crypto-live-ticker.ts) - Real-time asset price ticks rendered across keys.
 
 ---
 
