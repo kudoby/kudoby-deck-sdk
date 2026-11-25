@@ -1,7 +1,7 @@
 # Kudoby Deck Developer SDK
 
 [![CI Build](https://github.com/kudoby/kudoby-deck-sdk/actions/workflows/ci.yml/badge.svg)](https://github.com/kudoby/kudoby-deck-sdk/actions)
-[![npm version](https://img.shields.io/badge/npm-v2.4.0-blue.svg)](https://www.npmjs.com/package/@kudoby/deck-sdk)
+[![npm version](https://img.shields.io/npm/v/kudoby-deck-sdk.svg?color=blue)](https://www.npmjs.com/package/kudoby-deck-sdk)
 [![License: MIT](https://img.shields.io/badge/License-MIT-purple.svg)](LICENSE)
 [![TypeScript](https://img.shields.io/badge/TypeScript-Ready-3178C6.svg)](https://www.typescriptlang.org/)
 [![Documentation](https://img.shields.io/badge/Docs-kudobydeck.com%2Fsdk-8930fd.svg)](https://kudobydeck.com/sdk/)
@@ -33,14 +33,14 @@ The Kudoby Deck SDK communicates directly with the Kudoby Desktop host engine ov
 ## 📦 Installation
 
 ```bash
-npm install @kudoby/deck-sdk
+npm install kudoby-deck-sdk
 ```
 
 Or using yarn / pnpm:
 
 ```bash
-yarn add @kudoby/deck-sdk
-pnpm add @kudoby/deck-sdk
+yarn add kudoby-deck-sdk
+pnpm add kudoby-deck-sdk
 ```
 
 ---
@@ -51,13 +51,13 @@ The SDK comes with built-in command-line tools to bootstrap and test plugins ins
 
 ```bash
 # 1. Scaffold a brand-new plugin with full TypeScript & manifest setup
-npx @kudoby/deck-sdk create my-obs-plugin
+npx kudoby-deck-sdk create my-obs-plugin
 
 # 2. Validate your manifest.json schema before publishing
-npx @kudoby/deck-sdk validate
+npx kudoby-deck-sdk validate
 
 # 3. Launch the in-browser 15-key & rotary dial hardware simulator
-npx @kudoby/deck-sdk simulate
+npx kudoby-deck-sdk simulate
 ```
 
 ---
@@ -65,7 +65,7 @@ npx @kudoby/deck-sdk simulate
 ## 🚀 Quickstart
 
 ```typescript
-import { KudobyDeckClient } from '@kudoby/deck-sdk';
+import { KudobyDeckClient } from 'kudoby-deck-sdk';
 
 const client = new KudobyDeckClient({
   host: '127.0.0.1',
@@ -84,19 +84,16 @@ async function main() {
       // Dynamic LCD display update (<1ms)
       client.setButton({
         buttonId: evt.buttonId,
-        label: 'ACTIVE',
-        bgColor: '#8930fd',
-        tally: 'live', // 'off' | 'preview' | 'live'
+        title: 'RECORDING',
+        backgroundColor: '#ef4444',
+        feedback: 'haptic-tick',
       });
-
-      // Send tactile haptic feedback to phone/tablet
-      client.triggerHaptic(20);
     }
   });
 
-  // 2. Listen to virtual rotary dials
+  // 2. Control rotary dials (volume, zooms, scrubbing)
   client.on('dial', (evt) => {
-    console.log(`Dial ${evt.dialId} turned. Delta: ${evt.delta}, Value: ${evt.value}`);
+    console.log(`Dial ${evt.dialId} turned ${evt.delta > 0 ? 'Clockwise' : 'Counter-Clockwise'}`);
   });
 }
 
@@ -105,91 +102,95 @@ main().catch(console.error);
 
 ---
 
-## 💡 What You Can Build
+## 🎨 Interactive Hardware Simulator
 
-1. **OBS Studio & Video Editing Controllers:**
-   - Map rotary dials to timeline scrubbing, color grading, and microphone gain.
-   - Live tally indicators on buttons (`live`, `preview`, `off`).
-2. **Esports & Gaming Telemetry HUDs:**
-   - Real-time in-game health, ammo, and cooldown status rendered dynamically on LCD keys.
-3. **Smart Studio IoT Automation:**
-   - Control Philips Hue, Nanoleaf, and Elgato Key Lights via virtual dials.
-   - Home Assistant macro sequences triggered with a single key tap.
-4. **Developer & DevOps Live Dashboards:**
-   - CI/CD build indicators (GitHub Actions, GitLab, Jenkins) with live red/green tally states.
-   - Real-time Bitcoin, Ethereum, and stock market price tickers.
-
----
-
-## 📂 Ready-to-Run Examples
-
-Explore the [`examples/`](./examples/) directory for complete, copy-pasteable implementations:
-
-- [**`examples/obs-volume-dial.ts`**](./examples/obs-volume-dial.ts): Audio volume knob with tactile haptics and mute state toggle.
-- [**`examples/crypto-live-ticker.ts`**](./examples/crypto-live-ticker.ts): Real-time crypto price monitor with auto-refresh and dynamic green/red background switching.
-- [**`examples/discord-tally-controller.ts`**](./examples/discord-tally-controller.ts): Discord voice mute/deafen status with real-time tally states.
-- [**`examples/twitch-channel-points-alert.ts`**](./examples/twitch-channel-points-alert.ts): Live streamer alert trigger with LCD animations and haptic pulses.
-
----
-
-## 🖥️ Local Browser Simulator
-
-Test plugins and hardware interactions directly in your browser without needing a physical phone or tablet:
+Don't have a mobile device handy? Test your plugin live in your browser using the included zero-latency hardware simulator:
 
 ```bash
-# Start the local browser simulator on port 9173
 npm run simulate
 ```
-Open **`http://localhost:9173`** to test 15 interactive LCD keys, rotate 4 rotary knobs with your scroll wheel, and inspect live WebSocket event dispatches.
+
+Open `http://localhost:9173` to see a virtual 15-key LCD deck and interactive rotary dials that communicate with your plugin in real-time.
 
 ---
 
-## 🧩 Plugin Manifest Template
+## 🧩 Plugin Structure
 
-Third-party plugins packaged for the **Kudoby Deck Marketplace** use a standardized manifest:
+Plugins are modular bundles distributed as `.kudobyplugin` archives or standard npm packages:
 
-- Explore the complete boilerplate in [**`templates/sample-plugin/`**](./templates/sample-plugin/)
-- View the [**`manifest.json`**](./templates/sample-plugin/manifest.json) specification for registering custom actions, icons, and rotary dials.
+```
+my-plugin/
+├── manifest.json       # Metadata, permissions, custom dial/button definitions
+├── package.json        # Dependencies
+├── tsconfig.json       # TypeScript configuration
+└── src/
+    └── index.ts        # Plugin logic interacting with KudobyDeckClient
+```
+
+### Sample `manifest.json`
+
+```json
+{
+  "$schema": "https://kudobydeck.com/schemas/plugin.v1.json",
+  "id": "com.example.obs-controller",
+  "name": "OBS Studio Smart Dial",
+  "version": "1.0.0",
+  "author": "Creator",
+  "description": "Control OBS scene volume, transition effects, and record tally lights.",
+  "category": "Broadcasting",
+  "entry": "dist/index.js",
+  "permissions": ["local-network", "storage"],
+  "actions": [
+    {
+      "uuid": "toggle-stream",
+      "name": "Stream Toggle",
+      "states": [
+        { "title": "LIVE", "backgroundColor": "#ef4444" },
+        { "title": "STANDBY", "backgroundColor": "#1e293b" }
+      ]
+    }
+  ],
+  "dials": [
+    {
+      "uuid": "master-volume",
+      "name": "Master Audio Dial",
+      "feedback": "haptic-continuous"
+    }
+  ]
+}
+```
 
 ---
 
-## 📖 API Reference
+## 🌟 Real-World Examples
 
-### `new KudobyDeckClient(config?: DeckConfig)`
-Initializes the client.
-- `host?: string` (Default: `'127.0.0.1'`)
-- `port?: number` (Default: `9173`)
-- `token?: string` (Optional authentication token)
-
-### `client.connect(): Promise<void>`
-Establishes the WebSocket connection with the Kudoby Deck host.
-
-### `client.on(event, callback)`
-Listens to incoming events from the deck:
-- `'button'`: Emits `{ buttonId, state: 'down' | 'up' | 'tap', timestamp }`
-- `'dial'`: Emits `{ dialId, delta, value, timestamp }`
-- `'connect'` / `'disconnect'` / `'error'`
-
-### `client.setButton(update: LCDUpdate): void`
-Pushes real-time visual updates to a virtual button:
-- `buttonId`: Identifier string of the target key
-- `label?`: Display title or dynamic text
-- `bgColor?`: Hex color string (e.g. `'#10b981'`)
-- `tally?`: Broadcast tally border (`'off' | 'preview' | 'live'`)
-
-### `client.triggerHaptic(durationMs?: number): void`
-Triggers device-level vibration on the connected mobile / tablet screen (Default: `18ms`).
+Check out the [`examples/`](examples/) directory for production-ready implementations:
+- [**OBS Studio Volume Dial**](examples/obs-volume-dial.ts) - Fine-grained mixer audio with rotary dials and LCD volume meters.
+- [**Discord Tally Light & Mute Controller**](examples/discord-tally-controller.ts) - Dynamic microphone mute state and voice channel activity indicators.
+- [**Twitch Channel Points Alert**](examples/twitch-channel-points-alert.ts) - Real-time stream interaction flashes with animated deck backgrounds.
+- [**Crypto / Stock Live Ticker**](examples/crypto-live-ticker.ts) - Real-time asset price ticks rendered across keys.
 
 ---
 
-## 🌐 Community & Ecosystem
+## 🔒 Security & Sandboxing
 
-- **Developer Documentation:** [https://kudobydeck.com/sdk/](https://kudobydeck.com/sdk/)
-- **Plugin Marketplace:** [https://kudobydeck.com/ecosystem/](https://kudobydeck.com/ecosystem/)
-- **Support & Inquiries:** [support@kudobydeck.com](mailto:support@kudobydeck.com)
+Kudoby plugins adhere to our strict Zero-Trust local execution policy:
+- Local-only execution (`127.0.0.1`) with zero telemetry tracking.
+- Cryptographically signed manifests for production distribution.
+- For complete security specifications, visit our [Security Architecture](https://kudobydeck.com/security/).
+
+---
+
+## 🤝 Contributing
+
+We welcome contributions! Please review [CONTRIBUTING.md](CONTRIBUTING.md) and our [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md).
+
+For vulnerability reports, please see our [Security Policy](SECURITY.md).
 
 ---
 
 ## 📄 License
 
-MIT License. Copyright (c) 2026 Kudoby Technologies Pvt. Ltd.
+Distributed under the MIT License. See [LICENSE](LICENSE) for details.
+
+© Kudoby Technologies Pvt. Ltd. All rights reserved.

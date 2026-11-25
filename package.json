@@ -1,5 +1,5 @@
 {
-  "name": "@kudoby/deck-sdk",
+  "name": "kudoby-deck-sdk",
   "version": "2.4.0",
   "description": "Official TypeScript & JavaScript SDK for Kudoby Deck. Build custom plugins, virtual rotary dials, and broadcast automation integrations.",
   "main": "dist/index.js",
@@ -31,7 +31,7 @@
   "homepage": "https://kudobydeck.com/sdk/",
   "repository": {
     "type": "git",
-    "url": "https://github.com/kudoby/kudoby-deck-sdk.git"
+    "url": "git+https://github.com/kudoby/kudoby-deck-sdk.git"
   },
   "bugs": {
     "url": "https://github.com/kudoby/kudoby-deck-sdk/issues"
