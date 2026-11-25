@@ -1,0 +1,13 @@
+# Source files & tests
+src/
+tests/
+examples/
+tsconfig.json
+.git*
+.github/
+
+# Development artifacts
+*.tsbuildinfo
+node_modules/
+.npm
+npm-debug.log*
