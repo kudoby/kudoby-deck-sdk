@@ -4,6 +4,10 @@
   "description": "Official TypeScript & JavaScript SDK for Kudoby Deck. Build custom plugins, virtual rotary dials, and broadcast automation integrations.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "bin": {
+    "kudoby": "bin/kudoby-cli.js",
+    "kudoby-deck": "bin/kudoby-cli.js"
+  },
   "scripts": {
     "build": "tsc",
     "simulate": "node simulator/server.js",

@@ -45,6 +45,23 @@ pnpm add @kudoby/deck-sdk
 
 ---
 
+## 🛠️ Developer CLI Tools
+
+The SDK comes with built-in command-line tools to bootstrap and test plugins instantly:
+
+```bash
+# 1. Scaffold a brand-new plugin with full TypeScript & manifest setup
+npx @kudoby/deck-sdk create my-obs-plugin
+
+# 2. Validate your manifest.json schema before publishing
+npx @kudoby/deck-sdk validate
+
+# 3. Launch the in-browser 15-key & rotary dial hardware simulator
+npx @kudoby/deck-sdk simulate
+```
+
+---
+
 ## 🚀 Quickstart
 
 ```typescript
