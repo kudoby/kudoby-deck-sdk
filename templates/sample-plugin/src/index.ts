@@ -1,4 +1,4 @@
-import { KudobyDeckClient, ButtonEvent, DialEvent } from '@kudoby/deck-sdk';
+import { KudobyDeckClient, ButtonEvent, DialEvent, TelemetryEvent } from '@kudobydeck/deck-sdk';
 
 /**
  * Kudoby Deck Sample Plugin

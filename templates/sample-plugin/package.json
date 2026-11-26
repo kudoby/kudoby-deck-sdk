@@ -7,7 +7,7 @@
     "build": "tsc"
   },
   "dependencies": {
-    "@kudoby/deck-sdk": "^2.4.0"
+    "@kudobydeck/deck-sdk": "^2.6.0"
   },
   "devDependencies": {
     "typescript": "^5.3.3"

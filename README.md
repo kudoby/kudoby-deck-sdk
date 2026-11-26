@@ -14,14 +14,14 @@ Developed and maintained by **Kudoby Technologies Pvt. Ltd.**
 
 ## ⚡ Architecture Overview
 
-The Kudoby Deck SDK communicates directly with the Kudoby Desktop host engine over ultra-low-latency WebSocket (`ws://127.0.0.1:9173`).
+The Kudoby Deck SDK v2.6 communicates directly with the Kudoby Desktop host engine over ultra-low-latency WebSocket (`ws://127.0.0.1:9173/ws` for SDK plugins, and `ws://<PC_IP>:5555` for mobile/web companion clients).
 
 ```
 ┌─────────────────────────────────┐        WebSocket (<1ms)        ┌───────────────────────────────────┐
 │       Developer Plugin          │ ◄────────────────────────────► │        Kudoby Deck Host           │
 │  (OBS, DaVinci, IoT, Discord)   │   Taps, Dials, State, Haptics  │    (Windows / macOS / Linux)      │
 └─────────────────────────────────┘                                └─────────────────┬─────────────────┘
-                                                                                     │ WebRTC (<10ms)
+                                                                                     │ LAN WS / Cloud Tunnel (<10ms)
                                                                    ┌─────────────────▼─────────────────┐
                                                                    │    Virtual Deck Controller        │
                                                                    │ (Android Phone, Tablet, Browser)  │
@@ -74,27 +74,39 @@ const client = new KudobyDeckClient({
 
 async function main() {
   await client.connect();
-  console.log('Connected to Kudoby Deck Studio!');
+  console.log('Connected to Kudoby Deck Studio v2.6!');
 
   // 1. Listen to key taps & presses
   client.on('button', (evt) => {
-    console.log(`Button ${evt.buttonId} action: ${evt.state}`);
+    console.log(`Button ${evt.buttonId} (slot ${evt.slotIndex}, page ${evt.pageIndex}) action: ${evt.state}`);
 
     if (evt.state === 'down') {
-      // Dynamic LCD display update (<1ms)
+      // Dynamic LCD display update + mobile haptic pulse (<1ms)
       client.setButton({
         buttonId: evt.buttonId,
-        title: 'RECORDING',
-        backgroundColor: '#ef4444',
+        slotIndex: evt.slotIndex,
+        pageIndex: evt.pageIndex,
+        label: 'RECORDING',
+        bgColor: '#ef4444',
+        tally: 'live',
         feedback: 'haptic-tick',
       });
     }
   });
 
-  // 2. Control rotary dials (volume, zooms, scrubbing)
+  // 2. Control rotary dials & per-app audio mixer
   client.on('dial', (evt) => {
-    console.log(`Dial ${evt.dialId} turned ${evt.delta > 0 ? 'Clockwise' : 'Counter-Clockwise'}`);
+    console.log(`Dial ${evt.dialId} value: ${evt.value}`);
   });
+
+  // 3. Receive live PC CPU/RAM/GPU telemetry
+  client.on('telemetry', (stats) => {
+    console.log(`PC CPU: ${stats.cpu}% | RAM: ${stats.ram}%`);
+  });
+
+  // 4. Switch pages or toggle key layout across all connected devices
+  client.switchPage(0);
+  client.setKeyLayout(true); // Titles Above & Icon Below
 }
 
 main().catch(console.error);

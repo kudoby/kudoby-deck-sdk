@@ -35,10 +35,11 @@ jobs:
 
     - name: Pack Distribution Tarball & Zip
       run: |
+        VERSION=$(node -p "require('./package.json').version")
         npm pack
         mkdir -p release-assets
         mv *.tgz release-assets/
-        zip -r release-assets/kudoby-deck-sdk-v2.4.0-standalone.zip dist bin templates README.md LICENSE package.json
+        zip -r "release-assets/kudoby-deck-sdk-v${VERSION}-standalone.zip" dist bin templates README.md LICENSE package.json
 
     - name: Publish to GitHub Packages
       run: |

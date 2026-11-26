@@ -26,11 +26,11 @@ if (command === 'create') {
 function showHelp() {
   console.log(`
 ======================================================
-  ⚡ Kudoby Deck Developer CLI (v2.4.0)
+  ⚡ Kudoby Deck Developer CLI (v2.6.0)
 ======================================================
 
 Usage:
-  npx @kudoby/deck-sdk <command> [options]
+  npx @kudobydeck/deck-sdk <command> [options]
 
 Commands:
   create <name>   Scaffold a brand new plugin with TypeScript & manifest
@@ -39,9 +39,9 @@ Commands:
   help            Show this help menu
 
 Examples:
-  npx @kudoby/deck-sdk create obs-audio-fx
-  npx @kudoby/deck-sdk validate
-  npx @kudoby/deck-sdk simulate
+  npx @kudobydeck/deck-sdk create obs-audio-fx
+  npx @kudobydeck/deck-sdk validate
+  npx @kudobydeck/deck-sdk simulate
 `);
 }
 
@@ -83,7 +83,7 @@ Next steps:
   1. cd ${targetName}
   2. npm install
   3. npm run build
-  4. npx @kudoby/deck-sdk simulate
+  4. npx @kudobydeck/deck-sdk simulate
 `);
 }
 

@@ -22,8 +22,8 @@ A clear and concise description of what you expected to happen.
 **Environment:**
  - OS: [e.g. Windows 11, macOS Sonoma, Ubuntu 22.04]
  - Node.js Version: [e.g. 18.x, 20.x]
- - SDK Version: [e.g. 2.4.0]
- - Kudoby Deck Host Version: [e.g. 2.4.0]
+ - SDK Version: [e.g. 2.6.0]
+ - Kudoby Deck Host Version: [e.g. 2.6.0+2600]
 
 **Additional context**
 Add any other context or log output here.
