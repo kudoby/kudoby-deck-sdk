@@ -2,12 +2,16 @@ export interface DeckConfig {
   host?: string;
   port?: number;
   token?: string;
+  pluginId?: string;
   autoReconnect?: boolean;
   reconnectIntervalMs?: number;
 }
 
 export interface ButtonEvent {
   buttonId: string;
+  pluginId?: string;
+  actionUuid?: string;
+  settings?: Record<string, any>;
   slotIndex?: number;
   pageIndex?: number;
   state: 'down' | 'up' | 'tap';
@@ -19,6 +23,16 @@ export interface DialEvent {
   target?: string;
   delta: number;
   value: number;
+  timestamp: number;
+}
+
+export interface SettingsEvent {
+  buttonId: string;
+  pluginId?: string;
+  actionUuid?: string;
+  slotIndex?: number;
+  pageIndex?: number;
+  settings: Record<string, any>;
   timestamp: number;
 }
 
@@ -53,6 +67,16 @@ export interface TriggerActionPayload {
 
 export type EventCallback<T> = (data: T) => void;
 
+function readEnv(name: string): string {
+  try {
+    const proc = (globalThis as any).process;
+    if (proc && proc.env && typeof proc.env[name] === 'string') {
+      return proc.env[name];
+    }
+  } catch (_) {}
+  return '';
+}
+
 export class KudobyDeckClient {
   private config: Required<DeckConfig>;
   private ws: any = null;
@@ -61,10 +85,15 @@ export class KudobyDeckClient {
   private manualDisconnect = false;
 
   constructor(config: DeckConfig = {}) {
+    const envPort = parseInt(readEnv('KUDOBY_SDK_PORT'), 10);
+    const envToken = readEnv('KUDOBY_SDK_TOKEN');
+    const envPluginId = readEnv('KUDOBY_PLUGIN_ID');
+
     this.config = {
-      host: config.host || '127.0.0.1',
-      port: config.port || 9173,
-      token: config.token || '',
+      host: config.host || readEnv('KUDOBY_SDK_HOST') || '127.0.0.1',
+      port: config.port || (Number.isFinite(envPort) && envPort > 0 ? envPort : 9173),
+      token: config.token ?? envToken,
+      pluginId: config.pluginId ?? envPluginId,
       autoReconnect: config.autoReconnect !== false,
       reconnectIntervalMs: config.reconnectIntervalMs || 2500,
     };
@@ -78,7 +107,11 @@ export class KudobyDeckClient {
     }
 
     return new Promise((resolve, reject) => {
-      const url = `ws://${this.config.host}:${this.config.port}/ws?token=${encodeURIComponent(this.config.token || '')}`;
+      const qs = new URLSearchParams();
+      if (this.config.token) qs.set('token', this.config.token);
+      if (this.config.pluginId) qs.set('pluginId', this.config.pluginId);
+      const query = qs.toString();
+      const url = `ws://${this.config.host}:${this.config.port}/ws${query ? `?${query}` : ''}`;
       let settled = false;
 
       try {
@@ -93,14 +126,25 @@ export class KudobyDeckClient {
             settled = true;
             resolve();
           }
-          this.emit('connect', { connected: true, host: this.config.host, port: this.config.port });
+          if (this.config.pluginId || this.config.token) {
+            this.send('register_plugin', {
+              pluginId: this.config.pluginId,
+              token: this.config.token,
+            });
+          }
+          this.emit('connect', {
+            connected: true,
+            host: this.config.host,
+            port: this.config.port,
+            pluginId: this.config.pluginId,
+          });
         };
 
         this.ws.onmessage = (event: any) => {
           try {
             const msg = JSON.parse(event.data);
             if (msg.event) {
-              if (msg.event === 'connect') return; // already emitted on open or keep payload accessible
+              if (msg.event === 'connect') return;
               this.emit(msg.event, msg.payload);
             } else if (msg.type === 'telemetry_update' && msg.telemetry) {
               this.emit('telemetry', msg.telemetry);
@@ -149,6 +193,7 @@ export class KudobyDeckClient {
 
   public on(event: 'button', cb: EventCallback<ButtonEvent>): void;
   public on(event: 'dial', cb: EventCallback<DialEvent>): void;
+  public on(event: 'settings', cb: EventCallback<SettingsEvent>): void;
   public on(event: 'telemetry', cb: EventCallback<TelemetryEvent>): void;
   public on(event: 'connect' | 'disconnect' | 'error', cb: EventCallback<any>): void;
   public on(event: string, cb: Function): void {

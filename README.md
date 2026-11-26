@@ -14,7 +14,7 @@ Developed and maintained by **Kudoby Technologies Pvt. Ltd.**
 
 ## ⚡ Architecture Overview
 
-The Kudoby Deck SDK v2.6 communicates directly with the Kudoby Desktop host engine over ultra-low-latency WebSocket (`ws://127.0.0.1:9173/ws` for SDK plugins, and `ws://<PC_IP>:5555` for mobile/web companion clients).
+The Kudoby Deck SDK v2.7 communicates directly with the Kudoby Desktop host engine over ultra-low-latency WebSocket (`ws://127.0.0.1:9173/ws` for SDK plugins, and `ws://<PC_IP>:5555` for mobile/web companion clients).
 
 ```
 ┌─────────────────────────────────┐        WebSocket (<1ms)        ┌───────────────────────────────────┐
@@ -74,7 +74,7 @@ const client = new KudobyDeckClient({
 
 async function main() {
   await client.connect();
-  console.log('Connected to Kudoby Deck Studio v2.6!');
+  console.log('Connected to Kudoby Deck Studio v2.7!');
 
   // 1. Listen to key taps & presses
   client.on('button', (evt) => {

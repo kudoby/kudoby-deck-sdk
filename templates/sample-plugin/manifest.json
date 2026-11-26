@@ -1,11 +1,11 @@
 {
   "$schema": "https://kudobydeck.com/schemas/plugin-manifest.v1.json",
-  "id": "com.kudoby.sample-plugin",
+  "id": "com.kudobydeck.sample-plugin",
   "name": "Quick Action Controller",
   "version": "1.0.0",
   "author": "Kudoby Technologies Pvt. Ltd.",
   "website": "https://kudobydeck.com",
-  "description": "Demonstrates Kudoby Deck plugin architecture with action buttons and rotary dial controls.",
+  "description": "Demonstrates Kudoby Deck plugin architecture with Property Inspector settings, SVG LCD updates, and rotary dial controls.",
   "minKudobyVersion": "2.6.0",
   "category": "Broadcast Automation",
   "entryPoint": "dist/index.js",
@@ -13,10 +13,32 @@
     {
       "uuid": "toggle-mic",
       "name": "Mute / Unmute Mic",
-      "tooltip": "Toggles microphone audio input with real-time tally state",
+      "tooltip": "Toggles microphone audio input with real-time tally state and SVG icon",
       "defaultIcon": "assets/mic.svg",
       "supportedStates": ["live", "off"],
-      "hasSettings": true
+      "hasSettings": true,
+      "settings": [
+        {
+          "key": "channelName",
+          "label": "Audio Channel",
+          "type": "select",
+          "default": "mic",
+          "options": ["mic", "discord", "spotify", "master"]
+        },
+        {
+          "key": "liveLabel",
+          "label": "Live Label",
+          "type": "text",
+          "default": "MIC LIVE",
+          "placeholder": "Label when unmuted"
+        },
+        {
+          "key": "hapticFeedback",
+          "label": "Haptic Pulse on Press",
+          "type": "boolean",
+          "default": true
+        }
+      ]
     },
     {
       "uuid": "master-volume-dial",

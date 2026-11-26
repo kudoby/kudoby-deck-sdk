@@ -1,6 +1,6 @@
 {
   "name": "@kudobydeck/deck-sdk",
-  "version": "2.6.0",
+  "version": "2.7.0",
   "description": "Official TypeScript & JavaScript SDK for Kudoby Deck. Build custom plugins, virtual rotary dials, and broadcast automation integrations.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
